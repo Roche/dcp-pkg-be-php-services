@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Console\Commands\Dcp\Workers;
+
+use Illuminate\Console\Command;
+use Dcp\Contracts\MessageQueueInterface;
+use Dcp\Helpers\Json;
+use Throwable;
+
+class {{ class }} extends Command
+{
+    /**
+     * The message queue interface instance.
+     *
+     * @var MessageQueueInterface
+     */
+    protected $messageQueue;
+
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'dcp:{{ kebab-class }}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Executes the tasks for the {{ class }} worker';
+
+    /**
+     * Create a new worker instance.
+     *
+     * @param  MessageQueueInterface  $messageQueue
+     * @return void
+     */
+    public function __construct(MessageQueueInterface $messageQueue)
+    {
+        parent::__construct();
+        $this->messageQueue = $messageQueue;
+    }
+
+    /**
+     * Execute the worker’s tasks.
+     *
+     * @return int
+     */
+    public function handle(): int
+    {
+        $queueName = 'MySpecificQueue'; // Define the queue name to consume from
+
+        $this->messageQueue->consume($queueName, function ($msg) {
+            $messageData = Json::decodeAssoc($msg->getBody());
+            $timeStarted = microtime(true);
+
+            try {
+                // Log the start of message processing
+                $this->line('Message execution started.');
+                $this->processMessage($messageData); // Process the message
+                // Log the processing time
+                $this->line(sprintf('Message processed. Execution Time: %ss', round(microtime(true) - $timeStarted, 2)));
+            } catch (Throwable $e) {
+                // Log any errors encountered during processing
+                $this->error(sprintf("Error while processing device message. Message: \n%s", $e->getMessage()));
+            }
+
+            // Acknowledge the message after successful processing
+            $this->messageQueue->acknowledge($msg->getDeliveryTag());
+        });
+
+        // Clean up and close connections if needed
+        $this->messageQueue->close(); // Close the message queue connection
+
+        return Command::SUCCESS; // Return success status
+    }
+
+    /**
+     * Process individual messages.
+     *
+     * @param  mixed  $messageData
+     * @return void
+     */
+    protected function processMessage($messageData): void
+    {
+        // Logic to process each message from the queue
+        $this->line(sprintf('Processing message data: %s', print_r($messageData, true)));
+    }
+}

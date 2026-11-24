@@ -1,0 +1,50 @@
+{
+  "name": "dcp/services",
+  "description": "Central DCP Services.",
+  "version": "0.0.0-dev",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Dcp\\": "src/"
+    },
+    "files": [
+      "src/Helpers/Helpers.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Dcp\\Tests\\": "tests/"
+    }
+  },
+  "authors": [
+    {
+      "name": "DCP Core Team",
+      "email": "info@open-dcp.ai"
+    }
+  ],
+  "require": {
+    "friendsofphp/consul-php-sdk": "^5.2",
+    "firebase/php-jwt": "^7.0",
+    "php-amqplib/php-amqplib": "^3.7",
+    "spatie/laravel-data": "^4.11"
+  },
+  "require-dev": {
+    "orchestra/testbench": "^9.0",
+    "phpunit/phpunit": "^11.0",
+    "mockery/mockery": "^1.6",
+    "vlucas/phpdotenv": "^5.6"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Dcp\\DcpServiceProvider"
+      ]
+    }
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit"
+  },
+  "support": {
+    "source": "https://github.com/Roche/dcp-pkg-be-php-services.git"
+  }
+}

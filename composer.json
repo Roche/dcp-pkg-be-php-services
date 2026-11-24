@@ -1,5 +1,5 @@
 {
-  "name": "dcp/services",
+  "name": "open-dcp/services",
   "description": "Central DCP Services.",
   "version": "0.0.0-dev",
   "type": "library",
